@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<project name="ScalacPlugin" default="build" basedir=".">
+
+	<property name="scala.home" value="build/scala-2.7.5.final" />
+	<property name="jetty.home" value="build/jetty-6.1.19" />
+
+	<property file="build.properties"/>
+	<property file="../build.properties"/>
+	<property name="plugin.dependencies" value="Console,ErrorList" />
+	<property name="dist.target" value="dist.complete" />
+	<property name="docs-proc.target" value="none" />
+	<property name="compiler.source" value="1.5" />
+	<property name="compiler.target" value="1.5" />
+
+	<import file="${build.support}/plugin-build.xml" />
+
+	<selector id="packageFiles">
+	  <or>
+	    <filename name="resources/*" />
+	    <filename name="index.html" />
+	  </or>
+	</selector>
+
+        <target name="init">
+          <taskdef resource="scala/tools/ant/antlib.xml">
+            <classpath>
+              <pathelement location="${scala.home}/lib/scala-compiler.jar" />
+              <pathelement location="${scala.home}/lib/scala-library.jar"  />
+            </classpath>
+          </taskdef>
+        </target>
+
+	<condition property="build.downloaded">
+           <and>
+              <available file="${build.dir}/jetty.zip"/>
+              <available file="${build.dir}/scala.tgz"/>
+           </and>
+        </condition>
+
+        <target name="build.prepare" unless="build.downloaded">
+          <mkdir dir="${build.dir}/classes" />
+
+          <get src="http://www.scala-lang.org/downloads/distrib/files/scala-2.7.5.final.tgz" dest="${build.dir}/scala.tgz" />
+ 	  <untar src="${build.dir}/scala.tgz" dest="${build.dir}" compression="gzip" >
+            <patternset>
+              <include name="*/lib/*.jar"/>
+            </patternset>
+          </untar>
+
+ 	  <get src="http://dist.codehaus.org/jetty/jetty-6.1.19/jetty-6.1.19.zip" dest="${build.dir}/jetty.zip" />
+ 	  <unzip src="${build.dir}/jetty.zip" dest="${build.dir}" >
+            <patternset>
+              <include name="*/lib/*.jar"/>
+            </patternset>
+          </unzip>
+
+          <unzip src="${scala.home}/lib/scala-compiler.jar" dest="${build.dir}/classes"/>
+          <unzip src="${scala.home}/lib/scala-library.jar" dest="${build.dir}/classes"/>
+
+          <unzip dest="${build.dir}/classes">
+            <fileset dir="${jetty.home}/lib">
+               <include name="*.jar" />
+            </fileset>
+          </unzip>
+        </target>
+
+        <target name="compile" depends="init">
+          <scalac srcdir="scala" destdir="${build.dir}/classes" classpathref="project.class.path" />
+        </target>
+
+        <target name="clean">
+          <delete dir="${build.dir}" quiet="true" />
+          <delete dir="classes" quiet="true" />
+        </target>
+
+	<path id="project.class.path">
+          <fileset dir="${scala.home}/lib">
+            <include name="*.jar" />
+          </fileset>
+          <fileset dir="${jetty.home}/lib">
+            <include name="*.jar" />
+          </fileset>
+	  <pathelement location="${jedit.install.dir}/jedit.jar" />
+	  <pathelement location="${jedit.plugins.dir}/ErrorList.jar"/>
+	  <pathelement location="${jedit.plugins.dir}/Console.jar"/>
+	</path>
+
+</project>

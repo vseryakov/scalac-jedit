@@ -1,0 +1,51 @@
+Scala plugin for jEdit 1.1.0
+Vlad Seryakov vseryakov@gmail.com
+
+Introduction
+------------------
+
+This plugin makes the development similar to C/C++ or other scripting environment, 
+i.e. it does not use any package manager or build tool. It assumes that all .jar 
+files are put in special library directory manually, this is the simplest mode 
+of operation.
+
+Of course, it is possible to specify custom directories and classpath and the plugin
+will discover .jar files automatically, but because at this moment settings are global, 
+if you switch between several projects very frequently, some kind of project specific 
+facility will make life easier. Currently it requires to change paths manually for 
+every compilation if it is different.
+
+So, if you know all .jar files needed for your project, they do not change often, 
+just copy then into Scala lib/ for example, which makes using scala interpreter 
+without problem because it loads all .jars from the lib/ automatically.
+
+See index.html for more information about installation and usage of the plugin.
+
+Features
+------------------
+
+- Scala syntax highlighting
+- Embedded Scala compiler, results in very fast compilation
+- Simple project strucutre convention, uses default directories
+- Recursively adds all .jar files in the classpaths
+- Recursively adds all Scala source files
+- Supports Liftweb project development structure
+- Embeds Jetty Web server for Liftweb development
+- Embedded Jetty automatically scans for newly compiled classes
+  and restarts Web server automatically
+- Creates simple Liftweb application structure
+
+See index.html for details
+
+Compilation and installation
+-------------------------------
+
+To build
+
+ # and
+
+it will create ScalacPlugin.jar with Scala compiler because compiler requires 
+classes to be available during startup and compilation. Instead of using 
+bootstrapping we just combine Scala compiler and Jetty server with our plugin
+and install into local jEdit directory.
+

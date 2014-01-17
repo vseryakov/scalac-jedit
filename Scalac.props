@@ -1,0 +1,30 @@
+# Plugin properties
+plugin.scalac.ScalacPlugin.activate=startup
+
+plugin.scalac.ScalacPlugin.name=Scala Plugin
+plugin.scalac.ScalacPlugin.author=Vlad Seryakov
+plugin.scalac.ScalacPlugin.version=1.1.0
+plugin.scalac.ScalacPlugin.docs=index.html
+plugin.scalac.ScalacPlugin.depend.0=jedit 04.03.07.00
+plugin.scalac.ScalacPlugin.depend.1=jdk 1.5
+plugin.scalac.ScalacPlugin.depend.2=plugin errorlist.ErrorListPlugin 1.7
+plugin.scalac.ScalacPlugin.depend.3=plugin console.ConsolePlugin 4.3.8
+plugin.scalac.ScalacPlugin.description=Scala Plugin for compilation of Scala files inside the editor without invoking external scalac compiler
+
+# Plugin menu
+plugin.scalac.ScalacPlugin.menu=\
+        scalac.compile \
+        scalac.create \
+        scalac.jetty
+
+# Action labels for actions supplied by actions.xml
+scalac.compile.label=Compile...
+scalac.create.label=Create...
+scalac.jetty.label=Jetty...
+
+# Option pane
+plugin.scalac.ScalacPlugin.option-pane=scalac
+
+options.scalac.label=Scala Plugin
+options.scalac.code=new scalac.ScalacPluginOptionPane();
+

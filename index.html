@@ -1,0 +1,181 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>
+      ScalacPlugin
+    </title>    
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <div class="book" lang="en">
+      
+      <div class="titlepage">
+        <div>
+          <div>
+            <h1 class="title">Scalac plugin</h1>
+          </div>
+          
+          <div>
+            <div class="authorgroup">
+              <div class="author">
+                <h3 class="author">
+                  <span class="firstname">Vlad</span>
+                  <span class="surname">Seryakov</span>
+                </h3>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="legalnotice">
+              <p class="legalnotice-title"><b>Legal Notice</b></p>
+              <p>
+               Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License,
+               Version 1.1 or any later version published by the Free Software Foundation; with no "Invariant Sections","Front-Cover Texts" or
+               "Back-Cover Texts", each as defined in the license.A copy of the license can be found in the file 
+                <code class="filename"> COPYING.DOC.txt </code> included with jEdit. 
+              </p>
+            </div>
+          </div>
+        </div>
+        <hr>
+      </div>
+      
+      <div class="toc">
+        <p><b>Table of Contents</b></p>
+        <ul>
+          <li><span class="chapter"><a href="#intro">1. Introduction</a></span></li>
+          <li><span class="chapter"><a href="#usage">2. Usage</a></span></li>
+          <li><span class="chapter"><a href="#license">3. License</a></span></li>
+        </ul>
+      </div>
+      
+      <div class="chapter" lang="en">
+        <div class="titlepage">
+          <h2 class="title"><a name="intro"></a>Chapter 1. Introduction</h2>
+        </div>
+        
+        <p>
+           The Scalac plugin provides the ability to compile Scala files without 
+           invoking external compiler, it keeps compiler in jEdit's JVM all the time
+           and avoids long startup times. It does not provide the rich Scala IDE 
+           functionality similar to Eclipse, IntelliJ or NetBeans Scala plugins. 
+           Because jEdit is much lighter and simpler than those IDEs and provides the
+           ability to work very productively, Scala plugin follows
+           the way how C/C++ development is done using jEdit. The only difference 
+           that compiler is embedded. The plugin uses Console and ErrorList plugins, 
+           for Commando scripts and error reporting.
+        </p>        
+      </div>
+
+      <div class="chapter" lang="en">
+        <div class="titlepage">
+          <h2 class="usage"><a name="intro"></a>Chapter 2. Usage</h2>
+        </div>
+        <p>
+           After installation, the Scalac plugin copies several files into your jEdit settings directory:
+           Scala edit and syntax mode into <i>~/.jedit/modes/</i> and several console Commando scripts 
+           into <i>console/commando/</i>.
+
+           <ul>
+           <li>Scala plugin menu <b>Compiler...</b>, Commando script <b>scalac.xml</b> is automatically bound to .scala files, 
+           so if you have a shortcut for console Compile command, or call it directly from 
+           Scala plugin menu or from Console menu, popup with Scala compiler settings will appear. 
+           
+           <p>
+           This BeanShell script invokes static class scalac.compiler.run("...") with the same options as 
+           for external scalac command.
+           <p/>
+           
+           <p>
+            This dialog has several parameters which define the behaviour.
+            <ul>
+            <li><b>Project path</b> defines the project root, under this directory there are several
+                predefined or assumed directories. The simple structure is the following:
+                <pre>
+                project path/
+                           lib/
+                           scala/
+                           webapp/
+                           classes/
+                           resources/
+                </pre>
+                When only project path is specified, these subdirectories assumed and compiler
+                and jetty Web server will use them. Otherwise, it is possible to specify custom
+                directories for source files, output classes and other directories.
+
+                <p>
+                <ul>
+                <li><i>scala</i> is where all Scala source files are located
+                <li><i>lib</i> is where all additional .jar files can be put, this subdir is added to the list of jar directories automatically when project path is specified
+                <li><i>classes</i> is where all compiled classes will be stored
+                <li><i>webapp</i> is where all html and other web files are stored, jetty servlet will use it automatically if project path is specified
+                <li><i>resources</i> is for all files to be included into .jar file
+                </ul>
+                </p>
+                <p>
+                HINT: For Liftweb projects, use main/ subdirectory for Project path.
+                </p>
+            </li>
+            </ul>
+            The rest of the parameters are self explanatory and need not be specified
+            when using Project path. But they can be used in addition or instead of 
+            predefined project structure.
+           </p>
+           </li>
+
+           <li><p>
+               Scala plugin menu <b>Jetty...<.b>, Commando script <b>jetty.xml</b> for running embedded Web servlet server. It uses the same 
+               project structure as Scala compiler and performs compiled classes monitoring for
+               modifications and automatically restarts web application.
+               </p>
+               <p>
+               Before running Jetty, make sure you ran Scala compiler at least 
+               once to produce compiled classes.
+               </p>
+           </li>
+
+           <li><p>
+               Commando script <b>build.xml</b> is generic building script, it can be used with make or other building utility.
+               </p>
+           </li>
+
+           <li><p>
+               Commando script <b>maven.xml</b> is Maven specific script for building using maven, it executes external Maven binary.
+               </p>
+           </li>
+        </p>
+        <p>
+           By default embedded compiler behaves the same way as external scalac utility with 2 
+           additional options for convenience:
+           <ul>
+           <li><b>-scalapath path</b> parameter tells the compiler to compile all modified .scala 
+               files in this directory, recursevily. No need to specify every source file separately.
+           </li>
+
+           <li><b>-jarpath</b> parameter tells that all .jar files under specified directories should be 
+               added to classpath. The format of this parameter is the same as -classpath, multiple directories 
+               can be specified. The compiler will locate all individual .jar files recursevily and add 
+               then to the classpath.
+           </li>
+        </p>
+        <p>
+        At this moment, embedded compiler keeps track of modified files in the memory, 
+        after restart it will recompile all files again
+        </p>
+      </div>
+      
+      <div class="chapter" lang="en">
+        <div class="titlepage">
+          <h2 class="title"><a name="license"></a>Chapter 3. License</h2>
+        </div>
+        
+        <p>
+           The source code is distributed under the GPL. Please see 
+           <a href="http://www.fsf.org/copyleft/gpl.html" target="_top"> http://www.fsf.org/copyleft/gpl.html</a>
+        </p>
+      </div>      
+      
+    </div>
+  </body>
+</html>
+
