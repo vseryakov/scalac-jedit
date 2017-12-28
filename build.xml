@@ -1,16 +1,21 @@
 <?xml version="1.0"?>
 <project name="ScalacPlugin" default="build" basedir=".">
 
-	<property name="scala.home" value="build/scala-2.7.5.final" />
-	<property name="jetty.home" value="build/jetty-6.1.19" />
+	<property name="scala.version" value="2.12.4" />
+	<property name="scala.home" value="build/scala-${scala.version}" />
+        <property name="scala.download.url" value="https://downloads.lightbend.com/scala/${scala.version}/scala-${scala.version}.tgz" />
+	<property name="jetty.version" value="9.4.8.v20171121" />
+	<property name="jetty.home" value="build/jetty-distribution-${jetty.version}" />
+        <property name="jetty.download.url" value="http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${jetty.version}/jetty-distribution-${jetty.version}.tar.gz" />
+
 
 	<property file="build.properties"/>
 	<property file="../build.properties"/>
 	<property name="plugin.dependencies" value="Console,ErrorList" />
 	<property name="dist.target" value="dist.complete" />
 	<property name="docs-proc.target" value="none" />
-	<property name="compiler.source" value="1.5" />
-	<property name="compiler.target" value="1.5" />
+	<property name="compiler.source" value="1.8" />
+	<property name="compiler.target" value="1.8" />
 
 	<import file="${build.support}/plugin-build.xml" />
 
@@ -26,36 +31,38 @@
             <classpath>
               <pathelement location="${scala.home}/lib/scala-compiler.jar" />
               <pathelement location="${scala.home}/lib/scala-library.jar"  />
+              <pathelement location="${scala.home}/lib/scala-reflect.jar"  />
             </classpath>
           </taskdef>
         </target>
 
 	<condition property="build.downloaded">
            <and>
-              <available file="${build.dir}/jetty.zip"/>
               <available file="${build.dir}/scala.tgz"/>
+              <available file="${build.dir}/jetty.tgz"/>
            </and>
         </condition>
 
         <target name="build.prepare" unless="build.downloaded">
           <mkdir dir="${build.dir}/classes" />
 
-          <get src="http://www.scala-lang.org/downloads/distrib/files/scala-2.7.5.final.tgz" dest="${build.dir}/scala.tgz" />
+          <get src="${scala.download.url}" dest="${build.dir}/scala.tgz" />
  	  <untar src="${build.dir}/scala.tgz" dest="${build.dir}" compression="gzip" >
             <patternset>
               <include name="*/lib/*.jar"/>
             </patternset>
           </untar>
 
- 	  <get src="http://dist.codehaus.org/jetty/jetty-6.1.19/jetty-6.1.19.zip" dest="${build.dir}/jetty.zip" />
- 	  <unzip src="${build.dir}/jetty.zip" dest="${build.dir}" >
+          <get src="${jetty.download.url}" dest="${build.dir}/jetty.tgz" />
+          <untar src="${build.dir}/jetty.tgz" dest="${build.dir}" compression="gzip" >
             <patternset>
               <include name="*/lib/*.jar"/>
             </patternset>
-          </unzip>
+          </untar>
 
           <unzip src="${scala.home}/lib/scala-compiler.jar" dest="${build.dir}/classes"/>
           <unzip src="${scala.home}/lib/scala-library.jar" dest="${build.dir}/classes"/>
+          <unzip src="${scala.home}/lib/scala-reflect.jar" dest="${build.dir}/classes"/>
 
           <unzip dest="${build.dir}/classes">
             <fileset dir="${jetty.home}/lib">

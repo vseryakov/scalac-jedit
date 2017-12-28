@@ -1,28 +1,26 @@
-Scala plugin for jEdit 1.1.0
+# Scala plugin for jEdit
 Vlad Seryakov vseryakov@gmail.com
 
-Introduction
-------------------
+## Introduction
 
-This plugin makes the development similar to C/C++ or other scripting environment, 
-i.e. it does not use any package manager or build tool. It assumes that all .jar 
-files are put in special library directory manually, this is the simplest mode 
+This plugin makes the development similar to C/C++ or other scripting environments,
+i.e. it does not use any package manager or build tool. It assumes that all .jar
+files are put in a pecial library directory manually. This is the simplest mode
 of operation.
 
-Of course, it is possible to specify custom directories and classpath and the plugin
-will discover .jar files automatically, but because at this moment settings are global, 
-if you switch between several projects very frequently, some kind of project specific 
-facility will make life easier. Currently it requires to change paths manually for 
-every compilation if it is different.
+Of course, it is possible to specify custom directories and the classpath, and the plugin
+will discover .jar files automatically. But because settings are currently global,
+this means that if you switch between several projects very frequently, some kind of project specific
+facility will make life easier. Currently, it requires to change paths manually for
+every compilation, if it is different.
 
-So, if you know all .jar files needed for your project, they do not change often, 
-just copy then into Scala lib/ for example, which makes using scala interpreter 
-without problem because it loads all .jars from the lib/ automatically.
+So, if you know all .jar files needed for your project, and they do not change often,
+just copy then into Scala lib/ for example, which makes using the scala interpreter
+less frustrating, because it loads all .jars from lib/ automatically.
 
 See index.html for more information about installation and usage of the plugin.
 
-Features
-------------------
+## Features
 
 - Scala syntax highlighting
 - Embedded Scala compiler, results in very fast compilation
@@ -37,15 +35,45 @@ Features
 
 See index.html for details
 
-Compilation and installation
--------------------------------
+## Compilation and installation
 
-To build
+### Requirements
 
- # and
+* Java 8+ SDK
+* Ant build tool
+* jEdit source code
+* jEdit build support files
+* this plugins source code
 
-it will create ScalacPlugin.jar with Scala compiler because compiler requires 
-classes to be available during startup and compilation. Instead of using 
-bootstrapping we just combine Scala compiler and Jetty server with our plugin
-and install into local jEdit directory.
+You need the jEdit source code (of the version you want to compile the plugin for).
+You can get the latest sources as an [archive from the jEdit website](http://jedit.org/index.php?page=download).
+
+You will need to put this project and the jEdit source code
+(in a directory with the name 'jedit') in the same directory, for example:
+
+	~/src/jedit/
+	~/src/scalac-jedit/
+
+Then get the jEdit build support files:
+
+	mkdir -p ~/src/jedit/build-support
+	curl https://sourceforge.net/p/jedit/svn/HEAD/tree/build-support/trunk/plugin-build.xml?format=raw \
+		> ~/src/jedit/build-support/plugin-build.xml
+	curl https://sourceforge.net/p/jedit/svn/HEAD/tree/build-support/trunk/build-helper.xml?format=raw \
+		> ../jedit/build-support/build-helper.xml
+
+Then build jEdit:
+
+	cd ~/src/jedit/
+	ant
+
+Then we can build our plugin:
+
+	cd ~/src/scalac-jedit/
+	ant
+
+This will create ScalacPlugin.jar, including the Scala compiler, because the compiler requires
+classes to be available during startup and compilation. Instead of using
+bootstrapping, we just combine the Scala compiler and the Jetty server with our plugin,
+and install into the local jEdit directory.
 
