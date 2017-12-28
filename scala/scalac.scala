@@ -121,18 +121,6 @@ object compiler {
         }
         return false
     }
-
-    // Compare 2 settings objects until native implementation fixed
-    def isSame(s1: Settings, s2: Settings): Boolean = {
-        for (i <- 1 until s1.allSettings.length) { 
-            val a = s1.allSettings(i)
-            val b = s2.allSettings(i)
-            if (a.unparse != b.unparse) {
-                return false
-            }
-        }
-        return true
-    }
     
     // Flush file from cache
     def cacheFlush(file: String) = {
@@ -281,7 +269,7 @@ object compiler {
         files.foreach(params += _)
         
         // Parse command line parameters
-        val command = new CompilerCommand(params.toList, settings, error, false)
+        val command = new CompilerCommand(params.toList, settings, error)
 
         // Add system classes
         systemClasspath(classpath)
@@ -300,8 +288,8 @@ object compiler {
             printf("FILES=" + command.files)
             printf("MODIFIED=" + sources)
             printf("CLASSPATH=" + command.settings.classpath.value)
-            printf("Settings=" + command.settings.allSettings.length)
-            for (s <- command.settings.allSettings) {
+            printf("Settings=" + command.settings.visibleSettings.size)
+            for (s <- command.settings.visibleSettings) {
                 if (s.unparse.length > 0) printf(s.unparse.toString)
             }
         }
@@ -327,8 +315,8 @@ object compiler {
     
         try {
             // Reuse existing compiler if settings are the same
-            if (compiler != null && isSame(command.settings, compiler.settings)) {
-                compiler.settings = command.settings
+            if (compiler != null && command.settings.equals(compiler.settings)) {
+                compiler.currentSettings = command.settings
                 compiler.reporter = reporter
             } else {
                 compiler = new Global(command.settings, reporter)

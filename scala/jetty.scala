@@ -4,7 +4,8 @@ import java.io._
 import java.net._
 import java.lang.{Runtime, System, Thread}
 import scala.collection.mutable.{ListBuffer,HashMap}
-import scala.concurrent.ops._
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import org.gjt.sp.jedit._
 import org.gjt.sp.util.Log
 import org.gjt.sp.jedit.gui.DockableWindowManager
@@ -12,10 +13,8 @@ import org.gjt.sp.jedit.EditPlugin
 import org.gjt.sp.util.IOUtilities
 import org.gjt.sp.jedit.MiscUtilities._
 
-import org.mortbay.jetty.Connector
-import org.mortbay.jetty.Server
-import org.mortbay.jetty.nio.SelectChannelConnector
-import org.mortbay.jetty.webapp.WebAppContext
+import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.webapp.WebAppContext
 
 object jetty {
 
@@ -48,11 +47,14 @@ object jetty {
         scalac.compiler.printf("jetty -port " + port + " -war " + warPath + " -classes " + classesPath + " -jar " + jarPath)  
         
         // Actual server thread
+/*
         server = new Server()
         
-        val connector = new SelectChannelConnector()
+        val connector = new NetworkTrafficSelectChannelConnector()
         connector.setPort(port)
         server.addConnector(connector)
+*/
+        server = new Server(port)
         
         val webapp = new WebAppContext()
         webapp.setContextPath("/")
@@ -88,7 +90,7 @@ object jetty {
         webapp.setExtraClasspath(paths.mkString(";"))
         server.setHandler(webapp)
         
-        spawn { 
+        Future {
             // Make extra classes available to the server as well
             var parent = Thread.currentThread().getContextClassLoader()
             
