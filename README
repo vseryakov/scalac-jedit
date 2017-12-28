@@ -37,9 +37,40 @@ See index.html for details
 
 ## Compilation and installation
 
-To build
+### Requirements
 
- # and
+* Java 8+ SDK
+* Ant build tool
+* jEdit source code
+* jEdit build support files
+* this plugins source code
+
+You need the jEdit source code (of the version you want to compile the plugin for).
+You can get the latest sources as an [archive from the jEdit website](http://jedit.org/index.php?page=download).
+
+You will need to put this project and the jEdit source code
+(in a directory with the name 'jedit') in the same directory, for example:
+
+	~/src/jedit/
+	~/src/scalac-jedit/
+
+Then get the jEdit build support files:
+
+	mkdir -p ~/src/jedit/build-support
+	curl https://sourceforge.net/p/jedit/svn/HEAD/tree/build-support/trunk/plugin-build.xml?format=raw \
+		> ~/src/jedit/build-support/plugin-build.xml
+	curl https://sourceforge.net/p/jedit/svn/HEAD/tree/build-support/trunk/build-helper.xml?format=raw \
+		> ../jedit/build-support/build-helper.xml
+
+Then build jEdit:
+
+	cd ~/src/jedit/
+	ant
+
+Then we can build our plugin:
+
+	cd ~/src/scalac-jedit/
+	ant
 
 This will create ScalacPlugin.jar, including the Scala compiler, because the compiler requires
 classes to be available during startup and compilation. Instead of using
